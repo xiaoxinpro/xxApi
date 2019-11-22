@@ -1,0 +1,25 @@
+{extend name="public/base" /}
+{block name="body"}
+    <link href="{php}echo ROOT_URL{/php}static/css/login.css" rel="stylesheet">
+    <div class="container">
+      <form class="form-signin" method="post">
+        <h2 class="form-signin-heading">用户登录</h2>
+        <label for="inputEmail" class="sr-only">账号</label>
+        <input name="username" type="text" id="inputEmail" class="form-control" placeholder="账号" required autofocus>
+        <label for="inputPassword" class="sr-only">密码</label>
+        <input name="password" type="password" id="inputPassword" class="form-control" placeholder="密码" required>
+        {if $message}
+        <div class="alert alert-danger alert-dismissible" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <strong>登录失败：</strong> {$message}
+        </div>
+        {/if}
+        <button class="btn btn-lg btn-primary btn-block" type="submit">登录</button>
+      </form>
+
+    </div>
+{/block}
+
+{block name="script"}
+
+{/block}

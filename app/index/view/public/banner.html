@@ -1,0 +1,20 @@
+<nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="{url}index.php">xxAPI</a>
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li {if app_name() == 'index'}class="active"{/if}><a href="{url}index.php">Index</a></li>
+        <li {if app_name() == 'fang'}class="active"{/if}><a href="{url}index.php/fang">Fang</a></li>
+        <li {if app_name() == 'api'}class="active"{/if}><a href="{url}index.php">None</a></li>
+        <li {if app_name() == 'more'}class="active"{/if}><a href="{url}index.php/more">More</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="{url}index.php/index/index/logout">退出</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div style="height:60px"></div>

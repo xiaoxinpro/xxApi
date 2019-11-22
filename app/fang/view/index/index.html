@@ -1,0 +1,117 @@
+{extend name="../../index/view/public/base" /}
+{block name="body"}
+{include file="../../index/view/public/banner" /}
+<div class="container" style="margin-bottom: 20px;">
+  <div class="panel panel-default">
+    <!-- Default panel contents -->
+    <div class="panel-heading">Fang</div>
+    <div class="panel-body" style="text-indent:0px;">
+      <div class="alert alert-info" role="alert">欢迎 {$username} 访问 Fang 数据。</div>
+      <!-- <p class="text-primary"></p> -->
+    </div>
+    <!-- 筛选表单 -->
+    <form class="form-horizontal">
+      <div class="form-group">
+        <label for="inputEmail3" class="col-sm-2 control-label">建筑年份</label>
+        <div class="col-sm-2">
+          <select class="form-control" id="sxBuildYearSelect">
+            <option>不限</option>
+            <option>大于</option>
+            <option>小于</option>
+            <option>范围</option>
+          </select>
+        </div>
+        <div class="col-sm-2">
+          <input type="number" class="form-control" id="sxBuildYearStart" placeholder="年份" style="display: none;">
+        </div>
+        <div class="col-sm-2">
+          <input type="number" class="form-control" id="sxBuildYearEnd" placeholder="年份" style="display: none;">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-4">
+          <button type="submit" class="btn btn-block btn-info">筛选</button>
+        </div>
+        <div class="col-sm-4">
+          <button type="submit" class="btn btn-block btn-warning">重置</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- 列表 -->
+  <div class="panel panel-default">
+    <div class="table-responsive">
+      <table class="table table-striped table-bordered table-hover">
+        <thead>
+          <tr>
+            <th class="text-center">ID</th>
+            <th class="text-center">小区</th>
+            <th class="text-center">类型</th>
+            <th class="text-center">建筑年份</th>
+            <th class="text-center">楼栋数量</th>
+            <th class="text-center">房屋数量</th>
+            <th class="text-center">单价(元)</th>
+            <th class="text-center">月涨幅</th>
+            <th class="text-center">地址</th>
+            <th class="text-center">备注</th>
+          </tr>
+        </thead>
+        <tbody>
+        {volist name="list" id="data"}
+          <tr>
+            <th class="text-center" width="50px" scope="row">{$data.id}</th>
+            <td class="" width="12%"><a href="{url}index.php/fang/house?estate_id={$data.id}">{$data.name}</a></td>
+            <td class="text-center" width="50px">{$data.type}</td>
+            <td class="text-center" width="75px">{$data.build_year}</td>
+            <td class="text-center" width="75px">{$data.build_count}</td>
+            <td class="text-center" width="75px">{$data.house_count}</td>
+            <td class="text-center" width="70px">{$data.price}</td>
+            <td class="text-center" width="60px">{$data.ratio}%</td>
+            <td class="">{$data.district}区 {$data.comarea}镇 {$data.address}</td>
+            <td class="" width="10%">{$data.mark|replace='小区信息',''}</td>
+          </tr>
+        {/volist}
+        </tbody>
+      </table>      
+    </div>
+  </div>
+
+  <!-- 分页 -->
+  <div class="text-center">
+    {$page|raw}
+  </div>
+  
+</div>
+{/block}
+
+{block name="script"}
+<script type="text/javascript">
+  $(function(){
+    $('#sxBuildYearSelect').find("option:contains(\"{$sxBuildYearSelect|default='不限'}\")").attr("selected",true);
+    $('#sxBuildYearSelect').trigger("change");
+  });
+
+  $('#sxBuildYearSelect').change(function () {
+    var label_id=($(this).val());
+    switch(label_id){
+      case '大于':
+      case '小于':
+        $('#sxBuildYearStart').show();
+        $('#sxBuildYearEnd').hide();
+        break;
+      case '范围':
+        $('#sxBuildYearStart').show();
+        $('#sxBuildYearEnd').show();
+        break;
+      case '不限':
+      default:
+        $('#sxBuildYearStart').hide();
+        $('#sxBuildYearEnd').hide();
+        break;
+    }
+  });
+
+</script>
+{/block}
