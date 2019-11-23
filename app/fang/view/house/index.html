@@ -4,17 +4,94 @@
 <div class="container" style="margin-bottom: 20px;">
   <div class="panel panel-default">
     <!-- Default panel contents -->
-    <div class="panel-heading">Fang - House</div>
+    <div class="panel-heading">{$estate.name|default='Fang - House'}</div>
     <div class="panel-body" style="text-indent:0px;">
-      <div class="alert alert-info" role="alert">欢迎 {$username} 访问 Fang - House 数据。</div>
+      <div class="alert alert-info" role="alert">欢迎 {$username} 访问 {$estate.name|default='Fang - House'} 数据。</div>
       <!-- <p class="text-primary"></p> -->
     </div>
   </div>
-  <!-- 小区地图 -->
-	<div class="panel panel-default">
-		<div class="panel-heading">小区位置</div>
-		<div id="container" style="width: 100%; height: 500px;"></div>
-	</div>
+
+{if intval($estate_id) > 0}
+  <!-- 小区详情&评分 -->
+  <div class="panel panel-default">
+    <!-- Default panel contents -->
+    <div class="panel-heading">小区详情</div>
+    <div class="panel-body" style="text-indent:0px;">
+      <ul class="list-group">
+      {foreach $row as $key=>$vo } 
+        <li class="list-group-item">
+          <div class="row">
+            <div class="col-sm-2 col-xs-3">{$vo}</div>
+            <div class="col-sm-10 col-xs-9">{$estate[$key]|default='暂无'}</div>
+          </div>  
+        </li>
+      {/foreach}
+        <li class="list-group-item">
+          <div class="row">
+            <div class="col-sm-2 col-xs-3">详细地址</div>
+            <div class="col-sm-8 col-xs-7">{$estate.city}市 {$estate.district}区 {$estate.comarea}镇 {$estate.address}</div>
+            <div class="col-sm-2 col-xs-2"><a class="btn btn-info btn-xs btn-block" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">地图</a></div>
+          </div>  
+        </li>
+      </ul>
+
+      <!-- 小区地图 -->
+      <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingOne">
+          <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+            小区位置
+          </a>
+        </div>
+        <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+          <div class="panel-body">
+            <div id="containerMap" style="width: 100%; height: 500px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 小区评分 -->
+      <div class="panel panel-default">
+        <div class="panel-heading">小区评分</div>
+        <div class="table-responsive">
+          <table class="table  table-bordered table-hover">
+            <thead>
+              <tr>
+                <th class="text-center">项目</th>
+                <th class="text-center">物业</th>
+                <th class="text-center">活跃</th>
+                <th class="text-center">教育</th>
+                <th class="text-center">板块</th>
+                <th class="text-center">综合</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th class="text-center" scope="row">评分</th>
+                <td class="text-center" width="18%">{$estate.wuye|loop_str='★'}</td>
+                <td class="text-center" width="18%">{$estate.inactive|loop_str='★'}</td>
+                <td class="text-center" width="18%">{$estate.education|loop_str='★'}</td>
+                <td class="text-center" width="18%">{$estate.mapboard|loop_str='★'}</td>
+                <td class="text-center" width="18%">{$estate.grade|loop_str='★'}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 小区户型 -->
+  <div class="panel panel-default">
+    <!-- Default panel contents -->
+    <div class="panel-heading">小区户型</div>
+    <div class="panel-body" style="text-indent:0px;">
+
+    </div>
+  </div>
+
+
+{/if}
 
   <!-- 成交记录列表 -->
   <div class="panel panel-default">
@@ -64,39 +141,48 @@
 
 {block name="script"}
 
+{if intval($estate_id) > 0}
 <!-- 地图API -->
 <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=7800aaac662716defe2944bb7f96acb5"></script>
 <script type="text/javascript" src="https://cache.amap.com/lbs/static/addToolbar.js"></script>
 <script type="text/javascript">
-	var map = new AMap.Map("container", {
-	  resizeEnable: true,
-	  zoom: 16,
-	  showIndoorMap: false
-	});
-	AMap.service(["AMap.PlaceSearch"], function() {
-	  //构造地点查询类
-	  var placeSearch = new AMap.PlaceSearch({
-	    pageSize: 1, // 单页显示结果条数
-	    pageIndex: 1, // 页码
-	    city: "021", // 兴趣点城市
-	    citylimit: true,  //是否强制限制在设置的城市内搜索
-	    map: map, // 展现结果的地图实例
-	    autoFitView: true // 是否自动调整地图视野使绘制的 Marker点都处于视口的可见范围
-	  });
-	  //关键字查询
-	  placeSearch.search('曹阳二村');
-	  map.on('complete', function() {
-	  	setTimeout(function(){
-	  		map.setZoom(16);
-	  	}, 250);
-	  });
-	});
+  var map = new AMap.Map("containerMap", {
+    resizeEnable: true,
+    zoom: 16,
+    showIndoorMap: false
+  });
 
+  // 打开地图
+  function openMap() {
+    AMap.service(["AMap.PlaceSearch"], function() {
+      //构造地点查询类
+      var placeSearch = new AMap.PlaceSearch({
+        pageSize: 1, // 单页显示结果条数
+        pageIndex: 1, // 页码
+        city: "021", // 兴趣点城市
+        citylimit: true,  //是否强制限制在设置的城市内搜索
+        map: map, // 展现结果的地图实例
+        autoFitView: true, // 是否自动调整地图视野使绘制的 Marker点都处于视口的可见范围
+      });
+      //关键字查询
+      placeSearch.on('complete', function(res){
+        console.log('placeSearch', res);
+        setTimeout(function(){
+          map.setZoom(16);
+        }, 250);
+      });
+      placeSearch.search('{$estate.name|default=""}');
+    });
+  }
 </script>
+{/if}
 
 <script type="text/javascript">
   $(function(){
-		
+    // 显示地图事件
+    $('#collapseOne').on('show.bs.collapse', function () {
+      openMap();
+    })
   });
 </script>
 
