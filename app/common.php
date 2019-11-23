@@ -28,3 +28,18 @@ function app_name()
 {
     return str_replace([base_path(), '/'], '', app_path());
 }
+
+// 指定字符串循环输出指定次数，
+function loop_str($num, $str, $v = '0')
+{
+    $num = intval($num);
+    if ($num > 0) {
+        $ret = '';
+        for ($i=0; $i < $num; $i++) { 
+            $ret = $ret.$str;
+        }
+        return $ret;
+    } else {
+        return $v;
+    }
+}
