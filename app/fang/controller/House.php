@@ -32,9 +32,27 @@ class House extends BaseController
                 session('fang_house_estate_id', $estate_id);
             }
             View::assign('username', $user['username']);
+            View::assign('estate_id',$estate_id);
             $list = Estate::getEstateHouse(input('get.estate_id', $estate_id));
             View::assign('list',$list);
             View::assign('page',$list->render());
+            if ($estate_id > 0) {
+                // dump(Estate::getEstateData($estate_id));
+                View::assign('estate', Estate::getEstateData($estate_id));
+                View::assign('row', array(
+                    'name' => '小区名称',
+                    'type' => '小区类型',
+                    'build_year' => '建筑年份',
+                    'build_type' => '建筑类型',
+                    'build_count' => '楼栋数量',
+                    'house_count' => '房屋数量',
+                    'sell' => '在售数量',
+                    'rent' => '在租数量',
+                    'price' => '平均单价',
+                    'ratio' => '价格涨幅',
+                    'developers' => '物业公司',
+                ));
+            }
         }
         return view();
     }
