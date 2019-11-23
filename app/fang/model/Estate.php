@@ -50,11 +50,21 @@ class Estate extends Model
 
     public static function getEstateHouse($estate_id=0, $cnt=20)
     {
+        $estate_id = intval($estate_id);
         $retSql = self::alias('e')->join('estate_house_make h', 'e.id = h.estate_id')->field('e.name as estate_name, e.time as estate_time, e.*, h.*');
         if ($estate_id > 0) {
             $retSql = $retSql->where('h.estate_id = ' . $estate_id);
         }
         return $retSql->paginate($cnt);
+    }
+
+    public static function getEstateData($estate_id)
+    {
+        $estate_id = intval($estate_id);
+        if ($estate_id > 0) {
+            return self::alias('e')->join('estate_item i', 'e.id = i.estate_id')->join('estate_rate r', 'e.id = r.estate_id')->where('e.id', $estate_id)->find();
+        }
+        return null;
     }
 
 }
