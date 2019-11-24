@@ -3,6 +3,7 @@ namespace app\fang\controller;
 
 use app\BaseController;
 use app\fang\model\Estate;
+use app\fang\model\EstateHouseType;
 use app\index\model\User;
 
 use think\Request;
@@ -19,7 +20,7 @@ class House extends BaseController
     public function index()
     {
         if (User::shellUser() === false) {
-            return redirect(url('/index/index/login'));
+            return redirect(url('/index/index/login'))  ;
         } else {
             $user = session('user');
             $estate_id = input('get.estate_id', null);
@@ -37,7 +38,8 @@ class House extends BaseController
             View::assign('list',$list);
             View::assign('page',$list->render());
             if ($estate_id > 0) {
-                // dump(Estate::getEstateData($estate_id));
+                // dump(EstateHouseType::getAll($estate_id));
+                View::assign('listHouseType', EstateHouseType::getAll($estate_id));
                 View::assign('estate', Estate::getEstateData($estate_id));
                 View::assign('row', array(
                     'name' => '小区名称',
