@@ -13,7 +13,7 @@ class User extends Model
     {
         $user = session('user');
         if ($user && array_key_exists('time', $user) && array_key_exists('shell', $user) && array_key_exists('uid', $user)) {
-            if (time() - $user['time'] > 7200) {
+            if (time() - $user['time'] > 86400) {
                 self::logout();
                 return false;
             }
