@@ -60,16 +60,16 @@
       {foreach $row as $key=>$vo } 
         <li class="list-group-item">
           <div class="row">
-            <div class="col-sm-2 col-xs-3">{$vo}</div>
-            <div class="col-sm-10 col-xs-9">{$estate[$key]|default='暂无'}</div>
+            <div class="col-sm-2 col-xs-4">{$vo}</div>
+            <div class="col-sm-10 col-xs-8">{$estate[$key]|default='暂无'}</div>
           </div>  
         </li>
       {/foreach}
         <li class="list-group-item">
           <div class="row">
-            <div class="col-sm-2 col-xs-3">详细地址</div>
-            <div class="col-sm-8 col-xs-7">{$estate.city}市 {$estate.district}区 {$estate.comarea}镇 {$estate.address}</div>
-            <div class="col-sm-2 col-xs-2"><a class="btn btn-info btn-xs btn-block" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">地图</a></div>
+            <div class="col-sm-2 col-xs-4">详细地址</div>
+            <div class="col-sm-8 col-xs-5">{$estate.city}市 {$estate.district}区 {$estate.comarea}镇 {$estate.address}</div>
+            <div class="col-sm-2 col-xs-3"><a class="btn btn-info btn-xs btn-block" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">地图</a></div>
           </div>  
         </li>
       </ul>
