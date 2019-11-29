@@ -11,10 +11,36 @@
     </div>
     <!-- 筛选表单 -->
     <form class="form-horizontal">
+
       <div class="form-group">
-        <label for="inputEmail3" class="col-sm-2  col-xs-12 control-label">建筑年份</label>
+        <label for="inputEstateName" class="col-sm-2  col-xs-12 control-label">小区名称</label>
+        <div class="col-sm-2 col-xs-12">
+          <input type="text" class="form-control" id="sxEstateName" name="sxEstateName" placeholder="留空则不限">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="inputLocation" class="col-sm-2  col-xs-12 control-label">地理位置</label>
         <div class="col-sm-2 col-xs-4">
-          <select class="form-control" id="sxBuildYearSelect">
+          <select class="form-control" id="sxLocationDistrict" name="sxLocationDistrict">
+            <option>不限</option>
+            <option>普陀</option>
+            <option>徐汇</option>
+          </select>
+        </div>
+        <div class="col-sm-2 col-xs-4">
+          <select class="form-control" id="sxLocationComarea" name="sxLocationComarea" style="display: none;">
+            <option>不限</option>
+            <option>A镇</option>
+            <option>B镇</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="inputBuildYear" class="col-sm-2  col-xs-12 control-label">建筑年份</label>
+        <div class="col-sm-2 col-xs-4">
+          <select class="form-control" id="sxBuildYearSelect" name="sxBuildYearSelect">
             <option>不限</option>
             <option>大于</option>
             <option>小于</option>
@@ -22,10 +48,28 @@
           </select>
         </div>
         <div class="col-sm-2 col-xs-4">
-          <input type="number" class="form-control" id="sxBuildYearStart" placeholder="年份" style="display: none;">
+          <input type="number" class="form-control" id="sxBuildYearStart" name="sxBuildYearStart" placeholder="年份" style="display: none;">
         </div>
         <div class="col-sm-2 col-xs-4">
-          <input type="number" class="form-control" id="sxBuildYearEnd" placeholder="年份" style="display: none;">
+          <input type="number" class="form-control" id="sxBuildYearEnd" name="sxBuildYearEnd" placeholder="年份" style="display: none;">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="inputAvgPrice" class="col-sm-2  col-xs-12 control-label">平均单价</label>
+        <div class="col-sm-2 col-xs-4">
+          <select class="form-control" id="sxAvgPriceSelect" name="sxAvgPriceSelect">
+            <option>不限</option>
+            <option>大于</option>
+            <option>小于</option>
+            <option>范围</option>
+          </select>
+        </div>
+        <div class="col-sm-2 col-xs-4">
+          <input type="number" class="form-control" id="sxAvgPriceStart" name="sxAvgPriceStart" placeholder="单价" style="display: none;">
+        </div>
+        <div class="col-sm-2 col-xs-4">
+          <input type="number" class="form-control" id="sxAvgPriceEnd" name="sxAvgPriceEnd" placeholder="单价" style="display: none;">
         </div>
       </div>
 
@@ -88,9 +132,46 @@
 
 {block name="script"}
 <script type="text/javascript">
+  function SetDefaultSelect(id, val='不限') {
+    $('#'+id).find("option:contains(\"{$" + id + "|default='不限'}\")").attr("selected",true);
+    $('#'+id).trigger("change");
+  }
+
+  function NumSelectChang(label_id, id_head) {
+    switch(label_id){
+      case '大于':
+      case '小于':
+        $('#' + id_head + 'Start').show();
+        $('#' + id_head + 'End').hide();
+        break;
+      case '范围':
+        $('#' + id_head + 'Start').show();
+        $('#' + id_head + 'End').show();
+        break;
+      case '不限':
+      default:
+        $('#' + id_head + 'Start').hide();
+        $('#' + id_head + 'End').hide();
+        break;
+    }
+  }
+
   $(function(){
-    $('#sxBuildYearSelect').find("option:contains(\"{$sxBuildYearSelect|default='不限'}\")").attr("selected",true);
-    $('#sxBuildYearSelect').trigger("change");
+    SetDefaultSelect('sxLocationDistrict');
+    SetDefaultSelect('sxBuildYearSelect');
+  });
+
+  $('#sxLocationDistrict').change(function() {
+    var label_id=($(this).val());
+    if (label_id == '不限') {
+      $('#sxLocationComarea').hide();
+    } else {
+      $('#sxLocationComarea').show();
+    }
+  });
+
+  $('#sxAvgPriceSelect').change(function () {
+    NumSelectChang($(this).val(), 'sxAvgPrice');
   });
 
   $('#sxBuildYearSelect').change(function () {
