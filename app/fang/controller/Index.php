@@ -34,6 +34,18 @@ class Index extends BaseController
         return view();
     }
 
+    public function apiLocation()
+    {
+        $retData = array();
+        if ($this->request->isGet()) {
+            $retData = Estate::getLocationList();
+        } else if ($this->request->isPost()) {
+            $district = input('post.district', null);
+            $retData = Estate::getLocationList($district);
+        }
+        return json($retData);
+    }
+
     public function test()
     {
         dump(Estate::test());
