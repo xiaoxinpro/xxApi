@@ -24,15 +24,11 @@
         <div class="col-sm-2 col-xs-4">
           <select class="form-control" id="sxLocationDistrict" name="sxLocationDistrict">
             <option>不限</option>
-            <option>普陀</option>
-            <option>徐汇</option>
           </select>
         </div>
         <div class="col-sm-2 col-xs-4">
           <select class="form-control" id="sxLocationComarea" name="sxLocationComarea" style="display: none;">
             <option>不限</option>
-            <option>A镇</option>
-            <option>B镇</option>
           </select>
         </div>
       </div>
@@ -137,6 +133,16 @@
     $('#'+id).trigger("change");
   }
 
+  function SetListSelect(id, list, field='district', val='不限') {
+    $('#'+id).empty();
+    if (val) {
+      $('#'+id).append('<option>'+val+'</option>');
+    }
+    for (var i = 0; i < list.length; i++) {
+      $('#'+id).append('<option>'+list[i][field]+'</option>');
+    }
+  }
+
   function NumSelectChang(label_id, id_head) {
     switch(label_id){
       case '大于':
@@ -159,14 +165,25 @@
   $(function(){
     SetDefaultSelect('sxLocationDistrict');
     SetDefaultSelect('sxBuildYearSelect');
+    $.get('./fang/index/apiLocation', function(data,status){
+      if (status == 'success') {
+        SetListSelect('sxLocationDistrict', data, 'district');
+      }
+    });
   });
 
   $('#sxLocationDistrict').change(function() {
     var label_id=($(this).val());
     if (label_id == '不限') {
+      $('#sxLocationComarea').val(label_id);
       $('#sxLocationComarea').hide();
     } else {
       $('#sxLocationComarea').show();
+      $.post('./fang/index/apiLocation',{'district':label_id}, function(data,status){
+        if (status == 'success') {
+          SetListSelect('sxLocationComarea', data, 'comarea');
+        }
+      });
     }
   });
 
