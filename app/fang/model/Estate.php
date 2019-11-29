@@ -14,9 +14,12 @@ class Estate extends Model
     {
         // $retData = self::alias('e')->leftJoin('estate_house_make h', 'e.id = h.estate_id')->field('e.name as estate_name, e.time as estate_time, e.*, h.*')->limit(10)->select()->toArray();
 
-        $subSQL = EstateHouseMake::getMaxIdSql();
-        dump($subSQL);
-        $retData = self::alias('e')->leftJoin('estate_house_make h', 'e.id = h.estate_id')->field('e.name as estate_name, e.time as estate_time, e.*, h.*')->where('h.id in '.$subSQL)->limit(10)->select()->toArray();
+        // $subSQL = EstateHouseMake::getMaxIdSql();
+        // dump($subSQL);
+        // $retData = self::alias('e')->leftJoin('estate_house_make h', 'e.id = h.estate_id')->field('e.name as estate_name, e.time as estate_time, e.*, h.*')->where('h.id in '.$subSQL)->limit(10)->select()->toArray();
+
+        $retData = self::field('district')->distinct(true)->select()->toArray();
+        $retData = self::field('comarea')->distinct(true)->where('district', '普陀')->select()->toArray();
         return $retData;
     }
     
@@ -54,6 +57,18 @@ class Estate extends Model
             return self::alias('e')->join('estate_item i', 'e.id = i.estate_id')->join('estate_rate r', 'e.id = r.estate_id')->where('e.id', $estate_id)->find();
         }
         return null;
+    }
+
+    // 获取位置列表（指定区）
+    public static function getLocationList($district=null)
+    {
+        $retData = array();
+        if (is_null($district)) {
+            $retData = self::field('district')->distinct(true)->select()->toArray();
+        } else {
+            $retData = self::field('comarea')->distinct(true)->where('district', $district)->select()->toArray();
+        }
+        return $retData;
     }
 
 }
