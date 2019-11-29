@@ -8,12 +8,8 @@ class Estate extends Model
 {
     protected $connection = 'fang';
     protected $type = ['time' => 'timestamp:Y年m月d日'];
-    
-    public function house()
-    {
-        return $this->hasMany(EstateHouseMake::class, 'estate_id');
-    }
 
+    // 测试函数
     public static function test()
     {
         // $retData = self::alias('e')->leftJoin('estate_house_make h', 'e.id = h.estate_id')->field('e.name as estate_name, e.time as estate_time, e.*, h.*')->limit(10)->select()->toArray();
@@ -24,30 +20,22 @@ class Estate extends Model
         return $retData;
     }
     
+    // 获取全部小区数据（分页）
     public static function getAll($cnt = 20)
     {
         // 查询全部数据
         $dbData = self::alias('e')->leftJoin('estate_item i', 'e.id = i.estate_id')->paginate($cnt);
         // dump($dbData);
         return $dbData;
-        
-        // 关联查询
-        // $dbHouse = $dbData->house()->select();
-        // dump($dbHouse);
-        
-        // 输出日期字段（自动时间戳转日期字符串）
-        $retData = array();
-        foreach ($dbData as $value) {
-            array_push($retData, $value);
-        }
-        return $retData;
     }
     
+    // 获取小区总数
     public static function getAllCount()
     {
         return self::count();
     }
 
+    // 获取小区及其交易数据（指定ID，分页）
     public static function getEstateHouse($estate_id=0, $cnt=20)
     {
         $estate_id = intval($estate_id);
@@ -58,6 +46,7 @@ class Estate extends Model
         return $retSql->paginate($cnt);
     }
 
+    // 获取指定ID的小区数据（指定ID）
     public static function getEstateData($estate_id)
     {
         $estate_id = intval($estate_id);
