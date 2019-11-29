@@ -53,6 +53,7 @@ class House extends BaseController
                     'price' => '平均单价',
                     'ratio' => '价格涨幅',
                     'developers' => '物业公司',
+                    'url' => '更多信息',
                 ));
             }
         }
