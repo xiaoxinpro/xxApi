@@ -24,11 +24,15 @@ class Estate extends Model
     }
     
     // 获取全部小区数据（分页）
-    public static function getAll($cnt = 20)
+    public static function getAll($condition=array(), $cnt=20)
     {
-        // 查询全部数据
-        $dbData = self::alias('e')->leftJoin('estate_item i', 'e.id = i.estate_id')->paginate($cnt);
-        // dump($dbData);
+        $dbData = null;
+        if (!is_array($condition) || count($condition) <= 0) {
+            // 查询全部数据
+            $dbData = self::alias('e')->leftJoin('estate_item i', 'e.id = i.estate_id')->paginate($cnt);
+        } else {
+            $dbData = self::alias('e')->leftJoin('estate_item i', 'e.id = i.estate_id')->where($condition)->paginate($cnt);
+        }
         return $dbData;
     }
     
