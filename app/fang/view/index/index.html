@@ -74,7 +74,7 @@
           <button type="submit" class="btn btn-block btn-info">筛选</button>
         </div>
         <div class="col-sm-4 col-xs-10 col-xs-offset-1">
-          <button type="submit" class="btn btn-block btn-warning">重置</button>
+          <button type="reset" class="btn btn-block btn-warning" onclick="InitForm();">重置</button>
         </div>
       </div>
     </form>
@@ -128,10 +128,6 @@
 
 {block name="script"}
 <script type="text/javascript">
-  function SetDefaultSelect(id, val='不限') {
-    $('#'+id).find("option:contains(\"{$" + id + "|default='不限'}\")").attr("selected",true);
-    $('#'+id).trigger("change");
-  }
 
   function SetListSelect(id, list, field='district', val='不限') {
     $('#'+id).empty();
@@ -162,14 +158,19 @@
     }
   }
 
-  $(function(){
-    SetDefaultSelect('sxLocationDistrict');
-    SetDefaultSelect('sxBuildYearSelect');
+  function InitForm() {
+    $('#sxLocationComarea').hide();
+    NumSelectChang('不限', 'sxAvgPrice');
+    NumSelectChang('不限', 'sxBuildYear');
     $.get('./fang/index/apiLocation', function(data,status){
       if (status == 'success') {
         SetListSelect('sxLocationDistrict', data, 'district');
       }
     });
+  }
+
+  $(function(){
+    InitForm();
   });
 
   $('#sxLocationDistrict').change(function() {
@@ -192,23 +193,7 @@
   });
 
   $('#sxBuildYearSelect').change(function () {
-    var label_id=($(this).val());
-    switch(label_id){
-      case '大于':
-      case '小于':
-        $('#sxBuildYearStart').show();
-        $('#sxBuildYearEnd').hide();
-        break;
-      case '范围':
-        $('#sxBuildYearStart').show();
-        $('#sxBuildYearEnd').show();
-        break;
-      case '不限':
-      default:
-        $('#sxBuildYearStart').hide();
-        $('#sxBuildYearEnd').hide();
-        break;
-    }
+    NumSelectChang($(this).val(), 'sxBuildYear');
   });
 
 </script>
