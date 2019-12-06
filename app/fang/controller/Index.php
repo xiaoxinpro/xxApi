@@ -28,8 +28,12 @@ class Index extends BaseController
             $condition = array();
             if ($this->request->isPost()) {
                 $condition = $this->_formDataProcess(input('post.'));
+                session('fang_index_form', input('post.'));
+            } elseif (session('?fang_index_form')) {
+                $condition = $this->_formDataProcess(session('fang_index_form'));
             }
             $list = Estate::getAll($condition);
+            View::assign('condition',session('fang_index_form'));
             View::assign('list',$list);
             View::assign('page',$list->render());     
         }
@@ -47,6 +51,13 @@ class Index extends BaseController
             $retData = Estate::getLocationList($district);
         }
         return json($retData);
+    }
+
+    // 复位表单
+    public function reset()
+    {
+        session('fang_index_form', null);
+        return redirect(url('/fang'));
     }
 
     // 测试控制器
