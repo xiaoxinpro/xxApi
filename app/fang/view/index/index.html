@@ -15,7 +15,7 @@
       <div class="form-group">
         <label for="inputEstateName" class="col-sm-2  col-xs-12 control-label">小区名称</label>
         <div class="col-sm-2 col-xs-12">
-          <input type="text" class="form-control" id="sxEstateName" name="sxEstateName" placeholder="留空则不限">
+          <input type="text" class="form-control" id="sxEstateName" name="sxEstateName" placeholder="留空则不限" value="{$condition.sxEstateName|default=''}">
         </div>
       </div>
 
@@ -44,10 +44,10 @@
           </select>
         </div>
         <div class="col-sm-2 col-xs-4">
-          <input type="number" class="form-control" id="sxBuildYearStart" name="sxBuildYearStart" placeholder="年份" style="display: none;">
+          <input type="number" class="form-control" id="sxBuildYearStart" name="sxBuildYearStart" placeholder="年份" style="display: none;" value="{$condition.sxBuildYearStart|default=''}">
         </div>
         <div class="col-sm-2 col-xs-4">
-          <input type="number" class="form-control" id="sxBuildYearEnd" name="sxBuildYearEnd" placeholder="年份" style="display: none;">
+          <input type="number" class="form-control" id="sxBuildYearEnd" name="sxBuildYearEnd" placeholder="年份" style="display: none;" value="{$condition.sxBuildYearEnd|default=''}">
         </div>
       </div>
 
@@ -62,10 +62,10 @@
           </select>
         </div>
         <div class="col-sm-2 col-xs-4">
-          <input type="number" class="form-control" id="sxAvgPriceStart" name="sxAvgPriceStart" placeholder="单价" style="display: none;">
+          <input type="number" class="form-control" id="sxAvgPriceStart" name="sxAvgPriceStart" placeholder="单价" style="display: none;" value="{$condition.sxAvgPriceStart|default=''}">
         </div>
         <div class="col-sm-2 col-xs-4">
-          <input type="number" class="form-control" id="sxAvgPriceEnd" name="sxAvgPriceEnd" placeholder="单价" style="display: none;">
+          <input type="number" class="form-control" id="sxAvgPriceEnd" name="sxAvgPriceEnd" placeholder="单价" style="display: none;" value="{$condition.sxAvgPriceEnd|default=''}">
         </div>
       </div>
 
@@ -74,7 +74,7 @@
           <button type="submit" class="btn btn-block btn-info">筛选</button>
         </div>
         <div class="col-sm-4 col-xs-10 col-xs-offset-1">
-          <button type="reset" class="btn btn-block btn-warning" onclick="InitForm();">重置</button>
+          <a href="{url}index.php/fang/index/reset" class="btn btn-block btn-warning">重置</a>
         </div>
       </div>
     </form>
@@ -139,7 +139,24 @@
     }
   }
 
+  function LocationSelectChang(district, comarea) {
+    $('#sxLocationDistrict').val(district);
+    if (district == '不限') {
+      $('#sxLocationComarea').val('不限');
+      $('#sxLocationComarea').hide();
+    } else {
+      $.post('./fang/index/apiLocation',{'district':district}, function(data,status){
+        if (status == 'success') {
+          SetListSelect('sxLocationComarea', data, 'comarea');
+          $('#sxLocationComarea').show();
+          $('#sxLocationComarea').val(comarea);
+        }
+      });
+    }
+  }
+
   function NumSelectChang(label_id, id_head) {
+    $('#' + id_head + 'Select').val(label_id);
     switch(label_id){
       case '大于':
       case '小于':
@@ -159,12 +176,12 @@
   }
 
   function InitForm() {
-    $('#sxLocationComarea').hide();
-    NumSelectChang('不限', 'sxAvgPrice');
-    NumSelectChang('不限', 'sxBuildYear');
+    NumSelectChang("{$condition.sxBuildYearSelect|default='不限'}", 'sxAvgPrice');
+    NumSelectChang("{$condition.sxAvgPriceSelect|default='不限'}", 'sxBuildYear');
     $.get('./fang/index/apiLocation', function(data,status){
       if (status == 'success') {
         SetListSelect('sxLocationDistrict', data, 'district');
+        LocationSelectChang("{$condition.sxLocationDistrict|default='不限'}", "{$condition.sxLocationComarea|default='不限'}");
       }
     });
   }
@@ -175,17 +192,7 @@
 
   $('#sxLocationDistrict').change(function() {
     var label_id=($(this).val());
-    if (label_id == '不限') {
-      $('#sxLocationComarea').val(label_id);
-      $('#sxLocationComarea').hide();
-    } else {
-      $('#sxLocationComarea').show();
-      $.post('./fang/index/apiLocation',{'district':label_id}, function(data,status){
-        if (status == 'success') {
-          SetListSelect('sxLocationComarea', data, 'comarea');
-        }
-      });
-    }
+    LocationSelectChang(label_id, '不限');
   });
 
   $('#sxAvgPriceSelect').change(function () {
